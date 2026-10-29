@@ -24,6 +24,14 @@ class CoreTests(unittest.TestCase):
     def test_unknown_project(self):
         value=self.result();value['selected'][0]['id']='invented'
         with self.assertRaises(ValueError):app.validate(value,self.library())
+    def test_report_can_support_new_wording(self):
+        library=self.library()
+        library['projects'][0]['reports']=[{'id':'report1','content':'使用前缀和进行重复查询；验证100个时刻。'}]
+        app.validate(self.result('通过前缀和支持重复查询，验证100个时刻',['report1']),library)
+    def test_report_does_not_support_invented_metric(self):
+        library=self.library()
+        library['projects'][0]['reports']=[{'id':'report1','content':'验证100个时刻'}]
+        with self.assertRaises(ValueError):app.validate(self.result('速度提高50%',['report1']),library)
     def test_escape_tex(self):self.assertEqual(app.tex('50% & x_y'),r'50\% \& x\_y')
     def zip(self,name,text):
         raw=io.BytesIO()
