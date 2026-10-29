@@ -189,7 +189,7 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/': return self.reply((ROOT/'index.html').read_bytes().replace(b'__TOKEN__',TOKEN.encode()),mime='text/html; charset=utf-8')
         if path=='/api/state':
             with LOCK: state=load()
-            latest=next((p.parent.name for p in sorted((DATA/'runs').glob('*/resume.pdf'),key=lambda p:p.stat().st_mtime,reverse=True)),None)
+            latest=next((p.parent.name for p in sorted((DATA/'runs').glob('*/resume.pdf'),key=lambda p:p.stat().st_mtime,reverse=True) if (p.parent/'assembly.json').exists()),None)
             if latest and latest not in JOBS:
                 folder=DATA/'runs'/latest
                 if (folder/'assembly.json').exists(): JOBS[latest]={'id':latest,'status':'done','stage':'上次生成结果（请人工审核）','result':json.loads((folder/'assembly.json').read_text('utf-8'))}
