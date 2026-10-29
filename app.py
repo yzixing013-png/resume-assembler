@@ -91,6 +91,9 @@ def validate(result,library):
         for bullet in entry['bullets']:
             if not bullet['evidence'] or any(x not in facts for x in bullet['evidence']): raise ValueError('描述缺少有效的原始事实引用')
             source=' '.join(facts[x] for x in bullet['evidence'])
+            for qualifier in re.findall(r'（(截至[^）]+)）',source):
+                if qualifier not in bullet['text']:
+                    bullet['text']=bullet['text'].rstrip('。')+'（'+qualifier+'）。'
             # Numeric preservation is a mechanical check, not a semantic truth claim.
             source+=' '+project.get('tags','')+' '+project.get('date','')+' '+project.get('title','')
             available={n.replace(',','') for n in re.findall(r'\d[\d,]*(?:\.\d+)?',source)}

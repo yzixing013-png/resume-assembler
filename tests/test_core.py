@@ -13,6 +13,10 @@ class CoreTests(unittest.TestCase):
         with self.assertRaises(ValueError):app.validate(self.result('提高99%'),self.library())
     def test_numeric_substring_is_not_evidence(self):
         with self.assertRaises(ValueError):app.validate(self.result('核对26张快照'),self.library())
+    def test_restore_asof_qualifier(self):
+        library={'projects':[{'id':'p1','facts':[{'id':'f1','text':'阶段第49名（截至9月24日）'}]}]}
+        result=app.validate(self.result('阶段第49名'),library)
+        self.assertIn('截至9月24日',result['selected'][0]['bullets'][0]['text'])
     def test_missing_evidence(self):
         with self.assertRaises(ValueError):app.validate(self.result(evidence=[]),self.library())
     def test_cross_project_evidence(self):
