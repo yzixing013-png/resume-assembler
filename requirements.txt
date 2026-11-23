@@ -1,1 +1,1 @@
-PyMuPDF>=1.24,<2
+-r skills/resume-assembler/scripts/requirements.txt
